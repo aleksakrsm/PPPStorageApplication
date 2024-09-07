@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/PPPStorageApplication
+/PPPStorageApplication.API/bin/Debug/net8.0
+/PPPStorageApplication.API/obj
+/PPPStorageApplication.Core/bin/Debug/net8.0
+/PPPStorageApplication.Core/obj
+/PPPStorageApplication.Persistance/bin/Debug/net8.0
+/PPPStorageApplication.Persistance/obj
+/PPPStorageApplication.Service/bin/Debug/net8.0
+/PPPStorageApplication.Service/obj
