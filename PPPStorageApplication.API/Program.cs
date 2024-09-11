@@ -20,6 +20,9 @@ IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 builder.Services.AddTransient<ICityService, CityService>();//svaki put pravi novu instancu
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IBuyerService, BuyerService>();
+builder.Services.AddTransient<ISupplierService, SupplierService>();
 
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseMySql(builder.Configuration.GetSection("Database")

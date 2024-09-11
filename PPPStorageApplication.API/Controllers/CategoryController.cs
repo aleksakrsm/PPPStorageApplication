@@ -6,13 +6,13 @@ using PPPStorageApplication.Service.Services;
 
 namespace PPPStorageApplication.API.Controllers
 {
-    [Route("api/city")]
+    [Route("api/category")]
     [ApiController]
-    public class CityController : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly ICityService _cityService;
-        public CityController(ICityService cityService) {
-            _cityService = cityService;
+        private readonly ICategoryService _categoryService;
+        public CategoryController(ICategoryService categoryService) {
+            _categoryService = categoryService;
         }
 
         [HttpGet]
@@ -20,15 +20,15 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<CityDto>>> GetAll()
+        public async Task<ActionResult<List<CategoryDto>>> GetAll()
         {
             try
             {
-                return (await _cityService.GetAll());
+                return (await _categoryService.GetAll());
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
+               return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
         
@@ -37,12 +37,12 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CityDto>> GetById(int id)
+        public async Task<ActionResult<CategoryDto>> GetById(int id)
         {
             try
             {
-                var city = await _cityService.GetById(id);
-                return Ok(city);
+                var category = await _categoryService.GetById(id);
+                return Ok(category);
             }
             catch (Exception ex)
             {
@@ -54,11 +54,11 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CityDto>> Add(CityDto cityDto)
+        public async Task<ActionResult<CategoryDto>> Add(CategoryDto categoryDto)
         {
             try
             {
-                return (await _cityService.Add(cityDto));
+                return (await _categoryService.Add(categoryDto));
             }
             catch (Exception ex)
             {
@@ -70,11 +70,11 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CityDto>> Update(CityDto cityDto)
+        public async Task<ActionResult<CategoryDto>> Update(CategoryDto categoryDto)
         {
             try
             {
-                return (await _cityService.Update(cityDto));
+                return (await _categoryService.Update(categoryDto));
             }
             catch (Exception ex)
             {
@@ -85,16 +85,9 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task Delete(long cityDtoId)
+        public async Task Delete(long categoryDtoId)
         {
-            try
-            {
-                await _cityService.Delete(cityDtoId);
-            }
-            catch (Exception ex)
-            {
-                StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
-            }
+             await _categoryService.Delete(categoryDtoId);
         }
 
 

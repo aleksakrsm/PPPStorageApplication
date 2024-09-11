@@ -2,17 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using PPPStorageApplication.Core.DTO;
 using PPPStorageApplication.Service.Contracts;
-using PPPStorageApplication.Service.Services;
 
 namespace PPPStorageApplication.API.Controllers
 {
-    [Route("api/city")]
+    [Route("api/supplier")]
     [ApiController]
-    public class CityController : ControllerBase
+    public class SupplierController : ControllerBase
     {
-        private readonly ICityService _cityService;
-        public CityController(ICityService cityService) {
-            _cityService = cityService;
+        private readonly ISupplierService _supplierService;
+        public SupplierController(ISupplierService supplierService) {
+            _supplierService = supplierService;
         }
 
         [HttpGet]
@@ -20,11 +19,11 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<CityDto>>> GetAll()
+        public async Task<ActionResult<List<SupplierDto>>> GetAll()
         {
             try
             {
-                return (await _cityService.GetAll());
+                return (await _supplierService.GetAll());
             }
             catch (Exception ex)
             {
@@ -37,12 +36,12 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CityDto>> GetById(int id)
+        public async Task<ActionResult<SupplierDto>> GetById(long id)
         {
             try
             {
-                var city = await _cityService.GetById(id);
-                return Ok(city);
+                var supplier = await _supplierService.GetById(id);
+                return Ok(supplier);
             }
             catch (Exception ex)
             {
@@ -54,48 +53,42 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CityDto>> Add(CityDto cityDto)
+        public async Task<ActionResult<SupplierDto>> Add(SupplierDto supplierDto)
         {
             try
             {
-                return (await _cityService.Add(cityDto));
+                return (await _supplierService.Add(supplierDto));
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
-        
+
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CityDto>> Update(CityDto cityDto)
+        public async Task<ActionResult<SupplierDto>> Update(SupplierDto supplierDto)
         {
             try
             {
-                return (await _cityService.Update(cityDto));
+                return (await _supplierService.Update(supplierDto));
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
-        [HttpDelete]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task Delete(long cityDtoId)
-        {
-            try
-            {
-                await _cityService.Delete(cityDtoId);
-            }
-            catch (Exception ex)
-            {
-                StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
-            }
-        }
+
+        //[HttpDelete]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public async Task Delete(long supplierDtoId)
+        //{
+        //     await _supplierService.Delete(supplierDtoId);
+        //}
 
 
     }

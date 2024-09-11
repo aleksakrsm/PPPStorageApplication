@@ -33,7 +33,6 @@ namespace PPPStorageApplication.Service.Services
 
         public async Task<CityDto> GetById(int id)
         {
-            var query = "CALL getCityById(" + id + ")";
             var cities = _db.Cities.FromSqlRaw("CALL getCityById({0})", id).ToList();
             return cities.First() != null ? _mapper.Map<CityDto>(cities.First()): throw new Exception("city does not exist");
         }
