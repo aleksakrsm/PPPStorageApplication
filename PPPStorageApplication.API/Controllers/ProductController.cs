@@ -2,17 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using PPPStorageApplication.Core.DTO;
 using PPPStorageApplication.Service.Contracts;
-using PPPStorageApplication.Service.Services;
 
 namespace PPPStorageApplication.API.Controllers
 {
-    [Route("api/category")]
+    [Route("api/product")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class ProductController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService) {
-            _categoryService = categoryService;
+        private readonly IProductService _productService;
+        public ProductController(IProductService productService) {
+            _productService = productService;
         }
 
         [HttpGet]
@@ -20,29 +19,29 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<CategoryDto>>> GetAll()
+        public async Task<ActionResult<List<ProductWithPriceDto>>> GetAll()
         {
             try
             {
-                return (await _categoryService.GetAll());
+                return (await _productService.GetAll());
             }
             catch (Exception ex)
             {
-               return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
-        
+
         [HttpGet]
         [Route("get/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CategoryDto>> GetById(int id)
+        public async Task<ActionResult<BuyerDto>> GetById(long id)
         {
             try
             {
-                var category = await _categoryService.GetById(id);
-                return Ok(category);
+                var product = await _productService.GetById(id);
+                return Ok(product);
             }
             catch (Exception ex)
             {
@@ -54,41 +53,42 @@ namespace PPPStorageApplication.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CategoryDto>> Add(CategoryDto categoryDto)
+        public async Task<ActionResult<ProductWithPriceDto>> Add(ProductWithPriceDto productWithPriceDto)
         {
             try
             {
-                return (await _categoryService.Add(categoryDto));
+                return (await _productService.Add(productWithPriceDto));
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
-        
+
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CategoryDto>> Update(CategoryDto categoryDto)
+        public async Task<ActionResult<ProductWithPriceDto>> Update(ProductWithPriceDto productWithPriceDto)
         {
             try
             {
-                return (await _categoryService.Update(categoryDto));
+                return (await _productService.Update(productWithPriceDto));
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
-        [HttpDelete]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task Delete(long categoryDtoId)
-        {
-             await _categoryService.Delete(categoryDtoId);
-        }
+
+        //[HttpDelete]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public async Task Delete(long productDtoId)
+        //{
+        //     await _productService.Delete(productDtoId);
+        //}
 
 
     }

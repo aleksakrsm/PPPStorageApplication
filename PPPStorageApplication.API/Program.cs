@@ -9,6 +9,10 @@ using PPPStorageApplication.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Add services to the container.
 
 var mappingConfig = new MapperConfiguration(mc =>
@@ -23,12 +27,18 @@ builder.Services.AddTransient<ICityService, CityService>();//svaki put pravi nov
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IBuyerService, BuyerService>();
 builder.Services.AddTransient<ISupplierService, SupplierService>();
+builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<ProductToProductWithPriceDtoConverter, ProductToProductWithPriceDtoConverter>();
 
 builder.Services.AddDbContext<MyDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetSection("Database")
-    .GetSection("ConnectionString").Value,
-    ServerVersion.AutoDetect(builder.Configuration.GetSection("Database")
-    .GetSection("ConnectionString").Value)));
+    options.UseMySql(
+        builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString"),
+        ServerVersion.AutoDetect(builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString"))
+    ));
+
+//builder.Services.AddDbContext<MyDbContext>(options =>
+    //options.UseMySql("server=localhost;port=3306;database=ppp_skladiste;uid=root;password=krs3414ale.;SslMode=Preferred",
+    //ServerVersion.AutoDetect("server=localhost;port=3306;database=ppp_skladiste;uid=root;password=krs3414ale.;SslMode=Preferred")));
 
 builder.Services.AddControllers();
 

@@ -15,7 +15,7 @@ namespace PPPStorageApplication.API.Controllers
         }
 
         [HttpGet]
-        [Route("get/all")]
+        [Route("get")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

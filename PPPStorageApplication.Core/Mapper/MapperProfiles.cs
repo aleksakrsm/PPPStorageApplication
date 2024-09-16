@@ -14,6 +14,7 @@ namespace PPPStorageApplication.Core.Mapper
         public MapperProfiles()
         {
             CreateMap<City, CityDto>().ReverseMap();
+            CreateMap<Price, PriceDto>().ReverseMap();
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Buyer, BuyerDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LegalEntity.Id))
@@ -31,6 +32,32 @@ namespace PPPStorageApplication.Core.Mapper
             .ForPath(src => src.LegalEntity.Id, opt => opt.MapFrom(dest => dest.Id))
             .ForPath(src => src.LegalEntity.Name, opt => opt.MapFrom(dest => dest.Name))
             .ForPath(src => src.LegalEntity.CityId, opt => opt.MapFrom(dest => dest.CityId));
+            
+            CreateMap<Product, ProductDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.MeasurementUnit, opt => opt.MapFrom(src => src.MeasurementUnit))
+            .ForMember(dest => dest.SupplierId, opt => opt.MapFrom(src => src.SupplierId))
+            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+            .ReverseMap()
+            .ForPath(src => src.Id, opt => opt.MapFrom(dest => dest.Id))
+            .ForPath(src => src.Name, opt => opt.MapFrom(dest => dest.Name))
+            .ForPath(src => src.SupplierId, opt => opt.MapFrom(dest => dest.SupplierId))
+            .ForPath(src => src.CategoryId, opt => opt.MapFrom(dest => dest.CategoryId))
+            .ForPath(src => src.MeasurementUnit, opt => opt.MapFrom(dest => dest.MeasurementUnit));
+
+            CreateMap<Product, ProductWithPriceDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.MeasurementUnit, opt => opt.MapFrom(src => src.MeasurementUnit))
+            .ForMember(dest => dest.SupplierId, opt => opt.MapFrom(src => src.SupplierId))
+            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+            .ForMember(dest => dest.Price,
+            opt => opt.MapFrom(
+                src => ((src.ProductPrices != null && src.ProductPrices.FirstOrDefault(pp => pp.EndingDate == null) != null) 
+                            ? (src.ProductPrices.FirstOrDefault(pp => pp.EndingDate == null).Price.Amount) : -1))
+            );
+
 
         }
     }

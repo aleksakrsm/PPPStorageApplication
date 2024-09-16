@@ -9,9 +9,9 @@ public partial class ProductPrice
 
     public long PriceId { get; set; }
 
-    public DateOnly StartingDate { get; set; }
+    public DateTime StartingDate { get; set; }
 
-    public DateOnly EndingDate { get; set; }
+    public DateTime? EndingDate { get; set; } = null!;
 
     public virtual Price Price { get; set; } = null!;
 

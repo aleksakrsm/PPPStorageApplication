@@ -34,7 +34,7 @@ namespace PPPStorageApplication.Service.Services
         public async Task<CategoryDto> GetById(int id)
         {
             var categories = _db.Categories.FromSqlRaw("CALL getCategoryById({0})", id).ToList();
-            return categories.First() != null ? _mapper.Map<CategoryDto>(categories.First()): throw new Exception("category does not exist");
+            return (categories != null && categories.First() != null && categories.Count()>=1) ? _mapper.Map<CategoryDto>(categories.First()): throw new Exception("category does not exist");
         }
 
 

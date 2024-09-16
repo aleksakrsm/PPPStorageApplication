@@ -14,4 +14,8 @@
     <ProjectReference Include="..\PPPStorageApplication.Persistance\PPPStorageApplication.Persistance.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mapper\Impl\" />
+  </ItemGroup>
+
 </Project>
