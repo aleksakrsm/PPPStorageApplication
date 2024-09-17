@@ -125,7 +125,7 @@ public partial class MyDbContext : DbContext
             entity.Property(e => e.BuyerId)
                 .HasColumnType("bigint(20)")
                 .HasColumnName("buyer_id");
-            entity.Property(e => e.Date).HasColumnName("date");
+            entity.Property(e => e.Timestamp).HasColumnName("timestamp");
 
             entity.HasOne(d => d.Buyer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.BuyerId)

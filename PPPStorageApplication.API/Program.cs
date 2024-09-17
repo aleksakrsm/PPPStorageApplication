@@ -28,6 +28,7 @@ builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IBuyerService, BuyerService>();
 builder.Services.AddTransient<ISupplierService, SupplierService>();
 builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<ProductToProductWithPriceDtoConverter, ProductToProductWithPriceDtoConverter>();
 
 builder.Services.AddDbContext<MyDbContext>(options =>

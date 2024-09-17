@@ -58,7 +58,22 @@ namespace PPPStorageApplication.Core.Mapper
                             ? (src.ProductPrices.FirstOrDefault(pp => pp.EndingDate == null).Price.Amount) : -1))
             );
 
+            CreateMap<Order, OrderDto>()
+            .ForMember(dest => dest.BuyerName, opt => opt.MapFrom(src => src.Buyer.LegalEntity.Name))
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems));
 
+            CreateMap<OrderItem, AddOrderItemDto>()
+                .ForMember(dest => dest.product_id, opt => opt.MapFrom(src => src.ProductId))
+                .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.Quantity));
+
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.ProductMeasurementUnit, opt => opt.MapFrom(src => src.Product.MeasurementUnit))
+                .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.Quantity));
+
+            CreateMap<Order, AddOrderDto>()
+            .ForMember(dest => dest.BuyerId, opt => opt.MapFrom(src => src.Buyer.LegalEntityId))
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems));
         }
     }
 }

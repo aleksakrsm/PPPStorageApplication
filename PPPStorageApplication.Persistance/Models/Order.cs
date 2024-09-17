@@ -7,7 +7,7 @@ public partial class Order
 {
     public long Id { get; set; }
 
-    public DateOnly Date { get; set; }
+    public DateTime Timestamp { get; set; }
 
     public long BuyerId { get; set; }
 

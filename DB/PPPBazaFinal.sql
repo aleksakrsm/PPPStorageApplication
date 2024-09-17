@@ -113,14 +113,19 @@ DROP TABLE IF EXISTS `order`;
 
 CREATE TABLE `order` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `date` date NOT NULL,
+  `timestamp` datetime NOT NULL,
   `buyer_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk7` (`buyer_id`),
   CONSTRAINT `fk7` FOREIGN KEY (`buyer_id`) REFERENCES `buyer` (`legal_entity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `order` */
+
+insert  into `order`(`id`,`timestamp`,`buyer_id`) values 
+(1,'2024-09-17 12:24:35',5),
+(2,'2024-09-17 15:14:12',1),
+(5,'2024-09-17 15:31:29',2);
 
 /*Table structure for table `order_item` */
 
@@ -136,9 +141,15 @@ CREATE TABLE `order_item` (
   KEY `fk10` (`product_id`),
   CONSTRAINT `fk10` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
   CONSTRAINT `fk9` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `order_item` */
+
+insert  into `order_item`(`id`,`order_id`,`quantity`,`product_id`) values 
+(1,1,3,1),
+(2,1,2,2),
+(3,2,3,2),
+(4,5,3,14);
 
 /*Table structure for table `price` */
 
@@ -330,10 +341,21 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `addCity`(in cname varchar(20))
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `addCity`(IN cname VARCHAR(20))
 BEGIN
-		insert into city(name) values(cname);
-	END */$$
+    -- Check if the city already exists (ignoring case)
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM city 
+        WHERE LOWER(name) = LOWER(cname)
+    ) THEN
+        -- If city doesn't exist, insert it
+        INSERT INTO city(name) VALUES(cname);
+    ELSE
+        -- If city already exists, you can either do nothing or raise an error, for example:
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'City with this name already exists';
+    END IF;
+END */$$
 DELIMITER ;
 
 /* Procedure structure for procedure `addCityCheckName` */
@@ -477,7 +499,6 @@ DELIMITER ;
 DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `addOrderWithItems`(
-    IN orderDate DATE,
     IN buyerId BIGINT,
     IN orderItems JSON
 )
@@ -491,8 +512,13 @@ BEGIN
     -- Start a transaction
     START TRANSACTION;
 
-    -- Insert the new order
-    INSERT INTO `orders`(`order_date`, `buyer_id`) VALUES(orderDate, buyerId);
+    -- Check if the buyerId is valid
+    IF NOT EXISTS (SELECT 1 FROM `buyer` WHERE `legal_entity_id` = buyerId) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid buyerId: Buyer does not exist';
+    END IF;
+
+    -- Insert the new order, setting the order_date to the current timestamp
+    INSERT INTO `order`(`timestamp`, `buyer_id`) VALUES(NOW(), buyerId);
     
     -- Get the id of the newly inserted order
     SET orderId = LAST_INSERT_ID();
@@ -505,13 +531,18 @@ BEGIN
         SET productId = JSON_UNQUOTE(JSON_EXTRACT(orderItems, CONCAT('$[', itemIndex, '].product_id')));
         SET quantity = JSON_UNQUOTE(JSON_EXTRACT(orderItems, CONCAT('$[', itemIndex, '].quantity')));
 
+        -- Check if the productId is valid
+        IF NOT EXISTS (SELECT 1 FROM `product` WHERE `id` = productId) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid product_id!';
+        END IF;
+
         -- Ensure the product_id is unique within the order
-        IF EXISTS (SELECT 1 FROM `order_items` WHERE `order_id` = orderId AND `product_id` = productId) THEN
+        IF EXISTS (SELECT 1 FROM `order_item` WHERE `order_id` = orderId AND `product_id` = productId) THEN
             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Duplicate product_id in order items';
         END IF;
 
         -- Insert the order item
-        INSERT INTO `order_items`(`order_id`, `product_id`, `quantity`) VALUES(orderId, productId, quantity);
+        INSERT INTO `order_item`(`order_id`, `product_id`, `quantity`) VALUES(orderId, productId, quantity);
         
         SET itemIndex = itemIndex + 1;
     END WHILE;
